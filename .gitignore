@@ -22,6 +22,12 @@ test_client.nro
 test_client.o
 test_client.d
 
+# Controller build files
+overlay/build/
+overlay/*.elf
+overlay/*.nro
+overlay/*.nacp
+
 # IDE files
 .vscode/
 .idea/
