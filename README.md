@@ -1,4 +1,13 @@
-# 🎵 XMusic - Background Audio Player for Nintendo Switch
+# 🎵 XMu## ✨ Current Features
+
+- 🎮 **Background audio service** - Runs independently of games
+- 🎵 **Startup melody** - Mario-style coin sound on boot  
+- 🔊 **Audio engine** - PCM audio generation and playback
+- 🌐 **IPC service** - External control via service interface
+- 💾 **Low memory footprint** - ~2MB RAM usage
+- ⚡ **Fast startup** - Begins playback within seconds
+- 🛡️ **Stable operation** - Modern service architecture
+- 🧪 **Test client** - Verification tool for IPC commandsckground Audio Player for Nintendo Switch
 
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Switch](https://img.shields.io/badge/Nintendo-Switch-red.svg)](https://github.com/switchbrew/libnx)
@@ -21,7 +30,33 @@ XMusic is a lightweight homebrew sysmodule that provides background audio playba
 - 2MB+ free memory
 - Audio output capability
 
-## 🚀 Installation
+## � Development Status
+
+**Current Phase**: IPC Service Implementation ✅
+
+### Completed ✅
+- Core audio engine with PCM playback
+- Startup melody (Mario coin sound)
+- Modern IPC service architecture  
+- Background sysmodule operation
+- Test client for verification
+- Clean project structure (9 core files)
+- Working build system
+
+### In Progress 🔄
+- Hardware testing and validation
+- Service command verification
+
+### Planned 📅
+- Tesla overlay UI for controls
+- Extended audio features
+- Streaming integration (YouTube Music, SoundCloud)
+
+## 🧪 Testing
+
+See [TESTING.md](TESTING.md) for detailed testing instructions and IPC verification.
+
+## �🚀 Installation
 
 1. Download the latest release from [Releases](https://github.com/JeremLeOuf/XMusic/releases)
 2. Extract to SD card root

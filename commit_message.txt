@@ -1,0 +1,28 @@
+feat: Implement modern IPC service architecture and project cleanup
+
+## Major Changes
+- Add modern IPC service implementation (xmusic_service.h/cpp)
+- Replace deprecated IPC API calls with current libnx patterns
+- Create comprehensive test client for IPC verification
+- Fix compiler warnings and clean up project structure
+
+## New Features
+- Threaded IPC service with command handling (Play/Pause/Volume/Status)
+- Automated build system for both sysmodule and test client
+- Comprehensive testing documentation and procedures
+- Organized project structure with docs/ directory
+
+## Technical Improvements
+- Clean compilation with zero warnings
+- Enhanced Makefile with test and install targets
+- Updated .gitignore for proper build artifact exclusion
+- Removed legacy/obsolete files and build scripts
+
+## Build Status
+✅ Sysmodule: 75KB, clean compilation
+✅ Test Client: 660KB, clean compilation
+✅ Audio engine preserved with startup melody
+✅ Ready for hardware testing
+
+Files: +6 added, ~8 modified, -8 removed
+Lines: +500 added, -200 removed

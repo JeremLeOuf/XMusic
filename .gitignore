@@ -6,12 +6,21 @@ build/
 *.ovl
 *.nacp
 *.map
+*.o
+*.d
+*.nro
 
 # Distribution
 dist/
 
 # Backup
 backup/
+
+# Test client build files
+test_client.elf
+test_client.nro
+test_client.o
+test_client.d
 
 # IDE files
 .vscode/

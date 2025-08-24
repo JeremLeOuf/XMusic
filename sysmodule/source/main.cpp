@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include "audio_manager.h"
+#include "xmusic_service.h"
 #include "../../common/xmusic_ipc.h"
 
 extern "C" {
@@ -21,10 +22,8 @@ extern "C" {
 }
 
 // Global instances
-std::unique_ptr<AudioManager> audioManager;
-Handle serviceHandle;
-SmServiceName serviceName;
-XMusicStatus currentStatus = {};
+std::shared_ptr<AudioManager> audioManager;
+std::unique_ptr<XMusicService> xmusicService;
 
 void __libnx_initheap(void) {
     void* addr = nx_inner_heap;
@@ -61,25 +60,16 @@ void __appExit(void) {
 }
 
 void handleServiceRequest(Handle session) {
-    // Simplified service handler - just close the session for now
-    // We'll implement proper IPC later when the libnx API is figured out
-    svcCloseHandle(session);
+    // This function is no longer needed - handled by XMusicService
 }
 
 void serviceThread(void* arg) {
-    while (true) {
-        Handle session;
-        Result rc = svcAcceptSession(&session, serviceHandle);
-        
-        if (R_SUCCEEDED(rc)) {
-            handleServiceRequest(session);
-        }
-    }
+    // This function is no longer needed - handled by XMusicService
 }
 
 int main(int argc, char* argv[]) {
     // Initialize audio manager
-    audioManager = std::make_unique<AudioManager>();
+    audioManager = std::make_shared<AudioManager>();
     
     // Play startup sound
     audioManager->loadMelody();
@@ -90,40 +80,40 @@ int main(int argc, char* argv[]) {
     // Load test tone for background
     audioManager->loadTestTone(440.0f, 10.0f); // 10 second loop
     
-    // Initialize status
-    strcpy(currentStatus.title, "XMusic Ready");
-    strcpy(currentStatus.artist, "System");
-    currentStatus.volume = 0.3f;
-    currentStatus.playing = false;
-    
-    // Register service
-    serviceName = smEncodeName(XMUSIC_SERVICE_NAME);
-    Result rc = smRegisterService(&serviceHandle, serviceName, false, 2);
+    // Create and initialize service
+    xmusicService = std::make_unique<XMusicService>();
+    Result rc = xmusicService->initialize(audioManager);
     
     if (R_FAILED(rc)) {
-        // Service already registered, just run as audio-only
-        // Main service loop
+        // Service registration failed, continue as audio-only
         while (true) {
             svcSleepThread(1000000000LL); // Sleep 1 second
         }
         return 0;
     }
     
-    // Create service thread
-    Thread thread;
-    rc = threadCreate(&thread, serviceThread, nullptr, nullptr, 0x4000, 0x2B, -2);
-    if (R_SUCCEEDED(rc)) {
-        rc = threadStart(&thread);
+    // Start the service
+    rc = xmusicService->start();
+    if (R_FAILED(rc)) {
+        // Service start failed, continue as audio-only
+        while (true) {
+            svcSleepThread(1000000000LL); // Sleep 1 second
+        }
+        return 0;
     }
     
     // Main service loop
     while (true) {
         svcSleepThread(1000000000LL); // Sleep 1 second
         
-        // Could add status checks or maintenance here
+        // Service status check
+        if (!xmusicService->isRunning()) {
+            break;
+        }
     }
     
-    // Cleanup (won't reach here normally)
+    // Cleanup
+    xmusicService->stop();
     audioManager.reset();
     
     return 0;

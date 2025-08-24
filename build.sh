@@ -39,7 +39,25 @@ aarch64-none-elf-g++ \
     -c source/main.cpp -o build/main.o
 
 if [ $? -ne 0 ]; then
-    echo -e "${RED}Compilation failed!${NC}"
+    echo -e "${RED}Main compilation failed!${NC}"
+    cd ..
+    exit 1
+fi
+
+echo "  Compiling xmusic_service.cpp..."
+aarch64-none-elf-g++ \
+    -g -Wall -O2 -ffunction-sections \
+    -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE \
+    -I../common \
+    -I$DEVKITPRO/libnx/include \
+    -I$DEVKITPRO/portlibs/switch/include \
+    -D__SWITCH__ \
+    -fno-rtti -fno-exceptions \
+    -std=gnu++17 \
+    -c source/xmusic_service.cpp -o build/xmusic_service.o
+
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Service compilation failed!${NC}"
     cd ..
     exit 1
 fi
@@ -51,7 +69,7 @@ aarch64-none-elf-g++ \
     -g \
     -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE \
     -Wl,-Map,xmusic.map \
-    build/main.o \
+    build/main.o build/xmusic_service.o \
     -L$DEVKITPRO/libnx/lib \
     -L$DEVKITPRO/portlibs/switch/lib \
     -lnx \
