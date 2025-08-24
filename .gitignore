@@ -1,0 +1,9 @@
+build/
+*.elf
+*.nso
+*.nsp
+*.ovl
+*.nacp
+dist/
+libs/libtesla/
+.vscode/

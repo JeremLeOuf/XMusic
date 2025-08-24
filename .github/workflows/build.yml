@@ -1,0 +1,66 @@
+name: Build XMusic
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64:latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    
+    - name: Install dependencies
+      run: |
+        sudo dkp-pacman -Sy --noconfirm
+        sudo dkp-pacman -S --needed --noconfirm switch-dev switch-curl switch-mbedtls switch-zlib
+    
+    - name: Build libTesla
+      run: |
+        git clone https://github.com/WerWolv/libtesla.git libs/libtesla
+        make -C libs/libtesla
+    
+    - name: Build XMusic
+      run: |
+        make -C sysmodule
+        make -C overlay
+    
+    - name: Prepare release
+      run: |
+        mkdir -p dist/atmosphere/contents/58000000000000A1/flags
+        mkdir -p dist/switch/.overlays
+        cp sysmodule/xmusic.nso dist/atmosphere/contents/58000000000000A1/exefs.nso
+        cp overlay/xmusic-overlay.ovl dist/switch/.overlays/
+        cp atmosphere/contents/58000000000000A1/toolbox.json dist/atmosphere/contents/58000000000000A1/
+        touch dist/atmosphere/contents/58000000000000A1/flags/boot2.flag
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: XMusic-${{ github.sha }}
+        path: dist/
+    
+    - name: Create release zip
+      if: github.event_name == 'release'
+      run: |
+        cd dist
+        zip -r ../XMusic-${{ github.event.release.tag_name }}.zip *
+    
+    - name: Upload Release Asset
+      if: github.event_name == 'release'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./XMusic-${{ github.event.release.tag_name }}.zip
+        asset_name: XMusic-${{ github.event.release.tag_name }}.zip
+        asset_content_type: application/zip
