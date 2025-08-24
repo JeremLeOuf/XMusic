@@ -1,14 +1,12 @@
-.PHONY: all clean sysmodule overlay
+.PHONY: all clean sysmodule
 
-all: sysmodule overlay
+all: sysmodule
 
 sysmodule:
-	@$(MAKE) -C sysmodule
-
-overlay:
-	@$(MAKE) -C overlay
+	@echo "Building XMusic sysmodule..."
+	@./build.sh
 
 clean:
-	@$(MAKE) -C sysmodule clean
-	@$(MAKE) -C overlay clean
+	@echo "Cleaning build files..."
+	@rm -rf sysmodule/build sysmodule/*.elf sysmodule/*.nso sysmodule/*.map
 	@rm -rf dist

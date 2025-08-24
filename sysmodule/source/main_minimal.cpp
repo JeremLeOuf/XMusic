@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
-#include "audio_manager.h"
+#include "audio_manager_fixed.h"
 #include "../../common/xmusic_ipc.h"
 
 extern "C" {

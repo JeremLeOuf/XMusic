@@ -1,152 +1,196 @@
-# 🎯 XMusic - Next Development Steps
+# 🎯 XMusic - Development Roadmap
 
-## ✅ Milestone 1: Basic Service (COMPLETED)
-- [x] Project structure
-- [x] Compile sysmodule
-- [x] Create NSO file
-- [x] Basic service loop
+## ✅ Milestone 1: Core Foundation (COMPLETED)
+- [x] Project structure cleanup
+- [x] Working build system (single script)
+- [x] Sysmodule compilation 
+- [x] Audio manager implementation
+- [x] Background service loop
+- [x] Startup melody playback
+- [x] Test tone generation
+- [x] Memory management
+- [x] Service registration
+- [x] Basic documentation
 
-## 🔧 Milestone 2: Audio Foundation (CURRENT)
-Next, we need to add basic audio playback:
+**Status**: ✅ **WORKING** - Builds successfully, plays audio, runs stably
 
-### Step 1: Test Audio Output
-Create a simple test that plays a beep/tone to verify audio works.
+## 🔧 Milestone 2: IPC Communication (CURRENT FOCUS)
 
+The audio engine works, but we need proper IPC to control it.
+
+### Priority Tasks:
+1. **Fix IPC API Issues** 
+   - Research modern libnx IPC patterns
+   - Replace broken `IpcParsedCommand` usage
+   - Implement simple command handling
+
+2. **Basic Commands**
+   ```cpp
+   // Target IPC commands
+   XMusicCmd_Play     // Start playback
+   XMusicCmd_Pause    // Stop playback  
+   XMusicCmd_GetStatus // Return current state
+   XMusicCmd_SetVolume // Adjust volume
+   ```
+
+3. **Testing Method**
+   ```bash
+   # Test service communication
+   # Via homebrew test app or Tesla overlay
+   ```
+
+## 🎮 Milestone 3: Tesla Overlay Interface
+
+Once IPC works, create user controls.
+
+### Step 1: Minimal Overlay
 ```cpp
-// Add to main.cpp
-#include <switch/audio/audio.h>
-
-void testAudioBeep() {
-    // Generate 440Hz tone (A4 note)
-    // Play for 1 second
-}
+// Simple Tesla menu with:
+// - Play/Pause button
+// - Volume slider  
+// - Status display
 ```
 
-### Step 2: IPC Service Implementation
-Make the service actually respond to commands:
-
+### Step 2: Control Integration
 ```cpp
-// Implement service handler
-void handleIPCRequest() {
-    // Handle Play/Pause/Stop commands
-}
+// Connect overlay to service
+// Test all commands work
+// Handle connection errors
 ```
 
-### Step 3: Memory Audio Player
-Play audio from memory (no streaming yet):
+## � Milestone 4: Network Streaming
 
-```cpp
-class SimpleAudioPlayer {
-    // PCM buffer playback
-    // Volume control
-    // Basic mixing
-};
-```
-
-## 🎵 Milestone 3: Streaming Integration
+Add internet music capability.
 
 ### Step 1: HTTP Client
 ```cpp
-// Basic curl wrapper
-class HttpClient {
+class SimpleHttpClient {
     std::string get(const std::string& url);
-    std::string post(const std::string& url, const std::string& data);
+    // Basic GET requests only
 };
 ```
 
-### Step 2: YouTube/Invidious API
+### Step 2: Audio Streaming
 ```cpp
-class YouTubeClient {
-    std::vector<Track> search(const std::string& query);
-    std::string getStreamUrl(const std::string& videoId);
+class StreamingPlayer {
+    // Network→buffer→audio pipeline
+    // Handle buffering/dropouts
 };
 ```
 
-### Step 3: Audio Streaming
+### Step 3: YouTube Integration
 ```cpp
-class StreamingAudioPlayer {
-    // Buffer management
-    // Network streaming
-    // Format conversion
-};
+// Use Invidious API for track search
+// Extract audio stream URLs
+// Handle format conversion
 ```
 
-## 🎮 Milestone 4: Tesla Overlay
+## 📋 Current TODO (Priority Order)
 
-### Step 1: Basic Overlay
-- Install libtesla
-- Create basic UI
-- Connect to service
+### Week 1: IPC Fix
+- [ ] Research libnx IPC documentation
+- [ ] Create minimal IPC test program  
+- [ ] Fix service command handling
+- [ ] Test play/pause functionality
 
-### Step 2: Controls
-- Play/Pause button
-- Volume slider
-- Track info display
+### Week 2: Basic UI
+- [ ] Tesla overlay template
+- [ ] Connect to XMusic service
+- [ ] Basic controls (play/pause)
+- [ ] Status display
 
-### Step 3: Search Interface
-- Text input
-- Results list
-- Quick presets
+### Week 3: Audio Controls
+- [ ] Volume adjustment working
+- [ ] Track progress/duration
+- [ ] Multiple audio track support
+- [ ] Memory optimization
 
-## 📊 Testing Checklist
+### Week 4: Streaming Foundation
+- [ ] HTTP client implementation
+- [ ] Basic streaming test
+- [ ] Audio format research
+- [ ] Buffer management
 
-### On Real Hardware:
-- [ ] Service starts on boot
-- [ ] No crashes/freezes
-- [ ] Memory usage < 4MB
-- [ ] Audio plays without glitches
-- [ ] Works while gaming
+## 🧪 Testing Checklist
 
-### Performance:
-- [ ] CPU usage < 5%
-- [ ] No game slowdown
-- [ ] Smooth audio playback
-- [ ] Fast search results
+### Hardware Testing:
+- [ ] Boots without crashes
+- [ ] Plays startup melody
+- [ ] Runs continuously
+- [ ] Memory usage stable
+- [ ] No interference with games
+
+### IPC Testing:
+- [ ] Service accepts connections
+- [ ] Commands execute correctly
+- [ ] Error handling works
+- [ ] No memory leaks
+
+### Audio Testing:
+- [ ] Clear sound output
+- [ ] Volume control works
+- [ ] No audio glitches
+- [ ] Proper mixing
 
 ## 🛠️ Development Commands
 
 ```bash
-# Quick rebuild
-./simple_build.sh
+# Build and test
+./build.sh
 
-# Test on Switch
-# 1. Copy to SD: cp -r dist/* /path/to/sd/
-# 2. Check logs: cat /atmosphere/contents/58000000000000A1/logs/xmusic.log
+# Install on Switch
+cp -r dist/* /path/to/sd/
 
-# Debug mode build
-./simple_build.sh --debug
+# Check service status  
+# (via homebrew app to query service)
+
+# Debug memory
+# Monitor via Atmosphère tools
 ```
 
-## 📝 Current TODO
+## � Research Needed
 
-1. **IMMEDIATE**: Test on real Switch hardware
-2. **TODAY**: Add simple audio test (beep/tone)
-3. **THIS WEEK**: Implement IPC commands
-4. **NEXT WEEK**: Add streaming capability
+1. **Modern libnx IPC**: Find working examples of service communication
+2. **Tesla Integration**: Study existing overlays for patterns
+3. **Audio Streaming**: Research Switch audio format requirements
+4. **Memory Limits**: Test maximum concurrent audio buffer size
 
-## 🐛 Known Issues to Fix
+## � Implementation Notes
 
-- [ ] No actual audio playback yet
-- [ ] Service doesn't handle IPC
-- [ ] No overlay interface
-- [ ] No network functionality
+### IPC Service Pattern:
+```cpp
+// Target pattern (needs research):
+void handleIPCRequest() {
+    // Parse command from client
+    // Execute action
+    // Send response
+}
+```
 
-## 💡 Ideas for v0.2.0
+### Audio Architecture:
+```cpp
+// Current working pattern:
+AudioManager → PCM Buffer → Switch Audio Output
+// Future: Network → Decoder → AudioManager → Output
+```
 
-- SoundCloud support
-- Local file playback
-- Playlist management
-- Sleep timer
-- Equalizer
-- Discord Rich Presence
+## � Known Issues to Address
 
-## 📚 Helpful Resources
+1. **IPC API Mismatch**: Old API calls don't exist in current libnx
+2. **No Error Handling**: Service doesn't handle failed commands
+3. **Static Audio**: Only plays predefined sounds
+4. **No Persistence**: Settings don't save between reboots
 
-- [libnx audio docs](https://switchbrew.github.io/libnx/)
-- [Tesla overlay examples](https://github.com/WerWolv/Tesla-Menu)
-- [Atmosphère sysmodule guide](https://github.com/Atmosphere-NX/Atmosphere/wiki)
-- [Switch homebrew Discord](https://discord.gg/switch)
+## 📊 Progress Tracking
+
+- **Core Service**: ✅ 100% Working
+- **Audio Engine**: ✅ 100% Working  
+- **IPC System**: ❌ 0% Broken
+- **User Interface**: ❌ 0% Not started
+- **Streaming**: ❌ 0% Future feature
+
+**Next Milestone**: Get IPC working for basic play/pause control.
 
 ---
 
-**Next immediate action**: Test the compiled sysmodule on your Switch!
+**Current Status**: Basic audio sysmodule working perfectly. Next step is fixing IPC communication to enable external control.

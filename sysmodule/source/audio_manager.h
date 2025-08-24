@@ -1,11 +1,13 @@
 #pragma once
 #include <switch.h>
 #include <cstring>
+#include <cstdlib>  // for aligned_alloc
 #include <cmath>
 #include <vector>
 #include <atomic>
 #include <thread>
 #include <mutex>
+#include <string>
 
 class AudioManager {
 private:
@@ -84,9 +86,9 @@ public:
         audoutInitialize();
         audoutStartAudioOut();
         
-        // Allocate buffers
+        // Allocate buffers using aligned_alloc (C11 standard)
         for (u32 i = 0; i < BUFFER_COUNT; i++) {
-            bufferData[i] = (s16*)memalign(0x1000, BUFFER_SIZE * sizeof(s16));
+            bufferData[i] = (s16*)aligned_alloc(0x1000, BUFFER_SIZE * sizeof(s16));
             memset(bufferData[i], 0, BUFFER_SIZE * sizeof(s16));
             
             audioBuffers[i].next = nullptr;

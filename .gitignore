@@ -1,9 +1,25 @@
+# Build artifacts
 build/
 *.elf
 *.nso
 *.nsp
 *.ovl
 *.nacp
+*.map
+
+# Distribution
 dist/
-libs/libtesla/
+
+# Backup
+backup/
+
+# IDE files
 .vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Libraries (can be re-downloaded)
+libs/

@@ -21,7 +21,8 @@ mkdir -p build
 
 # Copy fixed files
 echo "  Copying fixed source files..."
-# Files are already in place, no need to copy
+cp source/audio_manager_fixed.h source/audio_manager.h
+cp source/main_minimal.cpp source/main.cpp
 
 # Compile with exceptions disabled (embedded requirement)
 echo -e "${YELLOW}Compiling XMusic...${NC}"
